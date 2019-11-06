@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
+    <title>Ansal TechBlog App</title>
 </head>
 <body>
-Hello ,
-This is the home page of techblogger app.
+
+<h1>Welcome to the tech blogger app</h1>
+<div th:each="p : ${list_of_posts}"> <!--For each post p in list_of_posts create a div-->
+    <br>
+    <h2 th:text="${p.title}"></h2>
+    <i><p th:text="${p.date}"></p></i>
+    <p th:text="${p.body}"></p>
+    <br>
+</div>
+
+
 </body>
+
 </html>
