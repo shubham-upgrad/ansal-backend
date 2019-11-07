@@ -4,7 +4,9 @@
     <title>Ansal TechBlog App</title>
 </head>
 <body>
-
+<!--Thymeleaf fragments: They help you to define reusable HTML code-->
+<!--layout is the file that contains all other fragments like logged-out,logged-in-->
+<header th:replace="layout :: logged-out"></header>
 <h1>Welcome to the tech blogger app</h1>
 <div th:each="p : ${list_of_posts}"> <!--For each post p in list_of_posts create a div-->
     <br>

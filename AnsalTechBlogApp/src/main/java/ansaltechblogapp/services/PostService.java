@@ -21,4 +21,19 @@ public class PostService {
         // Passing list of posts to the index using Model
         return posts;
     }
+
+    public ArrayList<Post> getUserPosts() {
+        Post p1=new Post("Post 1","Body of Post 1 by Shubham",new Date());
+        Post p2=new Post("Post 2","Body of Post 2 by Shubham",new Date());
+        Post p3=new Post("Post 3","Body of Post 3 by Shubham",new Date());
+        // Creating list of posts
+        ArrayList<Post> posts=new ArrayList<>();
+
+        posts.add(p1);
+        posts.add(p2);
+        posts.add(p3);
+        // Passing list of posts to the index using Model
+        return posts;
+    }
+
 }
