@@ -13,4 +13,13 @@ public class UserService {
             return null;
         }
     }
+
+    public User registerUser(User user) {
+        System.out.println("User successfully registered with following details:::");
+        System.out.println("Username:::"+user.getUsername());
+        System.out.println("Password:::"+user.getPassword());
+        return user; // This method would usually return null if user is not successfully
+        // registered(i.e, user could not be addded to the database)
+
+    }
 }

@@ -36,4 +36,14 @@ public class PostService {
         return posts;
     }
 
+    public Post createPost(Post p) {
+        p.setDate(new Date());
+        System.out.println("Post Created Successfully");
+        System.out.println("Title :::"+p.getTitle());
+        System.out.println("Date :::"+p.getDate());
+        System.out.println("Body :::"+p.getBody());
+        return p; // this method will usually return null if the post is NOT created
+        //(or added to the database successfully)
+
+    }
 }

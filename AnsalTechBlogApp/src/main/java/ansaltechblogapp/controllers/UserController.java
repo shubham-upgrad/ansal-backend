@@ -32,6 +32,18 @@ public class UserController {
         }
 
     }
+    @RequestMapping("/user/registration")
+    public String registerPage(){
+        return "user/registration";
+    }
+    @RequestMapping(value="/user/registration",method=RequestMethod.POST)
+    public String register(User user){
+        User registered=userService.registerUser(user);
+        if(registered!=null){
+            return "user/login";
+        }
+        return "user/registration";
+    }
     @RequestMapping(value = "/user/logout",method = RequestMethod.POST)
     public String logout(HttpSession session){
         session.invalidate();
