@@ -27,7 +27,7 @@ public class UserController {
         if(check==null){
             return "user/login";
         }else{
-            session.setAttribute("loggeduser",check);
+        //    session.setAttribute("loggeduser",check);
             return "redirect:/posts";
         }
 

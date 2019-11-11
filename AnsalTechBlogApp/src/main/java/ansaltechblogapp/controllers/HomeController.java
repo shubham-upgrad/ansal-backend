@@ -31,10 +31,10 @@ public class HomeController {
      */
     @RequestMapping("/")
     public String index(Model model, HttpSession session){
-        User logged=(User)session.getAttribute("loggeduser");
-        if(logged!=null){
-            return "redirect:/posts";
-        }
+        //User logged=(User)session.getAttribute("loggeduser");
+        //if(logged!=null){
+         //   return "redirect:/posts";
+        //}
         ArrayList<Post> posts=postService.getAllPosts();
         model.addAttribute("list_of_posts",posts);
 
