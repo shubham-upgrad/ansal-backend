@@ -14,6 +14,10 @@ public class Post {
         this.date = date;
     }
 
+    public Post() {
+
+    }
+
     public String getTitle() {
         return title;
     }
