@@ -1,0 +1,192 @@
+1. Added dependencies to the pom file for JPA :
+<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>2.1.5.RELEASE</version>
+</dependency>
+2. Created a file named persistence.xml in META-INF folder of resources directory.
+Reason : This file will be used to configure EntityManagerFactory and the PersistenceContext.
+	- EntityManagerFactory will create EntityManager which will be responsible for connecting and executing queries to the database.
+	- So, it is obvious that persistence.xml contains(database details) :
+		Details like Driver class name, user, url, password for the database
+	- Additional info(jpa) :
+		The JPA Provider and the dialect
+	- The content and format of the persistence file is given below :
+
+			<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+			             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+			            http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+			             version="2.1">
+			<!--   Define a persistence unit  -->
+			    <persistence-unit name="ansaltechblog">
+			        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+			        <properties>
+			            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+			            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/ansaltechblogdb"/>
+			            <property name="javax.persistence.jdbc.user" value="postgres"/>
+			            <property name="javax.persistence.jdbc.password" value="postgres@123"/>
+			            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+			            <property name="hibernate.jdbc.lob.non_contextual_creation" value="true"/>
+			        </properties>
+			    </persistence-unit>
+			</persistence>
+3. Creating JPAConfig ,i.e, a @Configuration class :
+	Reason :
+	1. EntityManagerFactory won't get created by itself....we need springboot to understand it as a Bean
+		so that it instantiates the EntityManagerFactory automatically
+		@Configuration is a class that helps to define various Beans that will be used during execution
+
+		We created a method that basically configures an instance of entitymanagerfactory using persistence.xml file
+		and returns the instance as a Bean(because the method had @Bean annotation on it).
+
+		So now SpringBoot is able to get an object of EntityManagerFactory using JPAConfig's method that returns 
+		a bean of type EntityManagerFactory
+	2. SpringBoot is known to have lots of pre-configured stuff...or AutoConfigurations as we call them.
+			So, it has DataSource also(means a database that it can use if Developer has provided none)	
+			We created a DataSource(a bean of type DataSource) by using a method that returns a configured
+			DataSource for our needs.
+			So that SpringBoot doesn't use it's own
+	
+	Contents of JPAConfig.java are given below :
+	
+		package ansaltechblogapp.config;
+
+		import org.springframework.context.annotation.Bean;
+		import org.springframework.context.annotation.Configuration;
+		import org.springframework.jdbc.datasource.DriverManagerDataSource;
+		import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+
+		import javax.persistence.EntityManagerFactory;
+		import javax.sql.DataSource;
+
+		@Configuration //- "Means it has a set of methods that provide useful beans"
+		public class JPAConfig {
+		    // Creating a bean that would return EntityManagerFactory
+		    @Bean // Springboot will mark the EntityManagerFactory so obtained as a Bean
+		    public EntityManagerFactory localContainerEntityManagerFactoryBean(){
+		        LocalContainerEntityManagerFactoryBean emfb=new LocalContainerEntityManagerFactoryBean();
+		        emfb.setPersistenceXmlLocation("classpath:META-INF/persistence.xml");
+		        emfb.afterPropertiesSet();
+		        return emfb.getObject();
+		    }
+		    // Telling spring that this is the DataSource that we want to use
+		    @Bean
+		    public DataSource dataSource(){
+		        DriverManagerDataSource ds=new DriverManagerDataSource();
+		        ds.setDriverClassName("org.postgresql.Driver");
+		        ds.setUrl("jdbc:postgresql://localhost:5432/ansaltechblogdb");
+		        ds.setUsername("postgres");
+		        ds.setPassword("postgres@123");
+		        return ds;
+		    }
+		}
+
+4.	Now configuration is complete all we needed to do now is 
+ define our Entities using @Entity, @Column , @ Table, @Id
+ For example Post was a simple object(model), we transformed it so that it becomes an entity :
+
+		 package ansaltechblogapp.models;
+
+		import javax.persistence.Column;
+		import javax.persistence.Entity;
+		import javax.persistence.Id;
+		import javax.persistence.Table;
+		import java.util.Date;
+		@Entity
+		@Table(name="posts")
+		public class Post {
+		    @Id // This annotation is used to define a primary key
+		    @Column
+		    private String title;
+		    @Column
+		    private String body;
+		    @Column(name="post_date") // if you don't provide name  then name of the column will be same as //variable name
+		    private Date date;
+
+		    public Post(String title, String body, Date date) {
+		        this.title = title;
+		        this.body = body;
+		        this.date = date;
+		    }
+
+		    public Post() {
+
+		    }
+
+		    public String getTitle() {
+		        return title;
+		    }
+
+		    public void setTitle(String title) {
+		        this.title = title;
+		    }
+
+		    public String getBody() {
+		        return body;
+		    }
+
+		    public void setBody(String body) {
+		        this.body = body;
+		    }
+
+		    public Date getDate() {
+		        return date;
+		    }
+
+		    public void setDate(Date date) {
+		        this.date = date;
+		    }
+		}
+
+5. Now we need to modify PostRepository which was using JDBC earlier to use JPA :
+	i. To use JPA or get an Entity like Post from Database...we needed an EntityManager
+	ii. To get an EntityManager...PostRepository requires EntityManagerFactory which is configured to work with our
+			database.
+	iii. So, basically , PostRepository will need to instantiate an Object of EntityManagerFactory which is configured to work with our database ............BUT WAIITTTTTTT!!!! 
+			We already told SpringBoot to create an Object of EntityManagerFactory configured to work with our database.
+			So.....we will just ask Spring to get us that object (or inject that object) in PostRepository
+			We used @PersistenceUnit(unitName="ansaltechblog") which gives us EMF object configured with
+			Persistence UNIT named "ansaltechblog"......This is same as using @Autowired in Controllers,Services,etc
+			Contents of PostRepository.java are given below :
+								package ansaltechblogapp.repositories;
+
+								import ansaltechblogapp.models.Post;
+								import org.springframework.stereotype.Repository;
+
+								import javax.persistence.EntityManager;
+								import javax.persistence.EntityManagerFactory;
+								import javax.persistence.PersistenceUnit;
+								import javax.persistence.TypedQuery;
+								import java.sql.*;
+								import java.util.ArrayList;
+
+								@Repository
+								public class PostRepository {
+								    @PersistenceUnit(unitName = "ansaltechblog")
+								    EntityManagerFactory emf;
+								    public ArrayList<Post> getAllPosts(){
+								        // Hardcoded Posts
+								//        Post p1=new Post("Post 1","Body of Post 1",new Date());
+								//        Post p2=new Post("Post 2","Body of Post 2",new Date());
+								//        Post p3=new Post("Post 3","Body of Post 3",new Date());
+								        // Creating list of posts
+								        ArrayList<Post> posts=new ArrayList<>();
+								        try{
+								            EntityManager em = emf.createEntityManager();
+								            TypedQuery<Post> tq = em.createQuery("SELECT p from Post p", Post.class);
+								            posts = (ArrayList<Post>) tq.getResultList();
+								        }catch (Exception e) {
+								            e.printStackTrace();
+								        }
+
+
+								//        posts.add(p1);
+								//        posts.add(p2);
+								//        posts.add(p3);
+								        // Passing list of posts to the index using Model
+								        return posts;
+								    }
+
+								}
+								

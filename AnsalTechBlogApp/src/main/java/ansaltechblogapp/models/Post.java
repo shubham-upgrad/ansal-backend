@@ -1,11 +1,19 @@
 package ansaltechblogapp.models;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
-
+@Entity
+@Table(name="posts")
 public class Post {
-
+    @Id // This annotation is used to define a primary key
+    @Column
     private String title;
+    @Column
     private String body;
+    @Column(name="post_date")
     private Date date;
 
     public Post(String title, String body, Date date) {

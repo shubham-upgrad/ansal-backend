@@ -17,9 +17,6 @@ public class HomeController {
     @Autowired
     PostService postService;
 
-
-
-
     /*** This method is supposed to pass posts(plural) to the "index"
      *  1. It must create Posts that are to be passed
      *  2. It must pass all the posts at once...
