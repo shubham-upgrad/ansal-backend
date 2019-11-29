@@ -1,14 +1,20 @@
 package ansaltechblogapp.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 @Entity
 @Table(name="posts")
 public class Post {
+    /***
+     IDENTITY : AUTO_INCREMENT column
+     SEQUENCE : SEQUENCE TABLE TO SIMULATE SEQUENCE OF NUMBERS
+     TABLE : A NORMAL TABLE(NOT SEQUENCE) to keep record of PRIMARY KEY(inefficient)
+     AUTO : Let HIBERNATE decide based on dialect...which one is the best
+     usually AUTO selects SEQUENCE
+     ***/
     @Id // This annotation is used to define a primary key
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
     @Column
     private String title;
     @Column

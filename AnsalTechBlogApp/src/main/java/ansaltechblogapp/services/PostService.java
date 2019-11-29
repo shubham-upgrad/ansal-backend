@@ -31,11 +31,13 @@ public class PostService {
     }
 
     public Post createPost(Post p) {
-        p.setDate(new Date());
-        System.out.println("Post Created Successfully");
-        System.out.println("Title :::"+p.getTitle());
-        System.out.println("Date :::"+p.getDate());
-        System.out.println("Body :::"+p.getBody());
+        p.setDate(new Date()); // Because service must set the date when post was created
+        // Neither the user nor the repository must set it
+//        System.out.println("Post Created Successfully");
+//        System.out.println("Title :::"+p.getTitle());
+//        System.out.println("Date :::"+p.getDate());
+//        System.out.println("Body :::"+p.getBody());
+        postRepository.createPost(p);
         return p; // this method will usually return null if the post is NOT created
         //(or added to the database successfully)
 

@@ -3,10 +3,7 @@ package ansaltechblogapp.repositories;
 import ansaltechblogapp.models.Post;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -21,15 +18,27 @@ public class PostRepository {
 //        Post p3=new Post("Post 3","Body of Post 3",new Date());
         // Creating list of posts
         ArrayList<Post> posts=new ArrayList<>();
+
         try{
             EntityManager em = emf.createEntityManager();
+            // ORM is supposed translate b/w object oriented and relational dbms
+            // So in TypedQuery we will define a query and its associated type
+            // which specifies what kind of results are expected out of a query.
+            // We will now ask EntityManager to create a TypedQuery
+            // So entitmanager will obviously ask us : The Query(JPQL) and The Type
+            // "SELECT p FROM Post p" -> JPQL that we provided
+            // Post.class --> The class type of the result that we expect
             TypedQuery<Post> tq = em.createQuery("SELECT p from Post p", Post.class);
-            posts = (ArrayList<Post>) tq.getResultList();
+            // "SELECT p FROM Post p" -> This is not SQL this is JPQL
+            // JPQL = Java Persistence Query Language
+            // JPQL is closer to JAVA than SQL
+            // Here we are saying : SELECT all Posts as p(because p is of type Post)
+            //                      FROM a table that represents Post in RDBMS
+            posts = (ArrayList<Post>) tq.getResultList(); // Will return a List(need to Downcast)
+
         }catch (Exception e) {
             e.printStackTrace();
         }
-
-
 //        posts.add(p1);
 //        posts.add(p2);
 //        posts.add(p3);
@@ -37,6 +46,24 @@ public class PostRepository {
         return posts;
     }
 
+    public Post createPost(Post p) {
+        // Create a post
+        // So to edit a database...a transaction is required
+        EntityManager em=emf.createEntityManager();
+        EntityTransaction et=em.getTransaction();
+        try{
+            et.begin(); // Starting the transaction
+            // Stuff that needs to be done during the transaction
+            // Create a post
+            em.persist(p); // Transient ---> Persisted
+            et.commit();
+            return p;
+        }catch(Exception e){
+            e.printStackTrace();
+            et.rollback();
+            return null;
+        }
+    }
 }
 // Older JDBC Code :
 // Class.forName will load the Driver class from org.postgresql package
