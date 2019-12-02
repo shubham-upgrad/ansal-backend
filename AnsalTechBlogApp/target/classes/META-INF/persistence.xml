@@ -17,6 +17,17 @@ and create an EntityManagerFactory.
             <property name="javax.persistence.jdbc.user" value="postgres"/>
             <property name="javax.persistence.jdbc.password" value="postgres@123"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL95Dialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+<!--           Create : Every time application starts -> Drop all the existing tables
+                        or entities and create new ones(it clears all the existing data)
+               Update : If there is a change in Entity structure then make that change
+                        and don't drop the tables...keeps existing data and adds columns
+               Validate : Check if things in DBMS are in correspondence with the Entities
+                        specified in the application
+               Create-drop : Create on startup and Drop on session termination
+ -->        
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.jdbc.lob.non_contextual_creation" value="true"/>
         </properties>
     </persistence-unit>

@@ -64,6 +64,37 @@ public class PostRepository {
             return null;
         }
     }
+
+    public Post getPostById(Integer id) {
+        EntityManager em=emf.createEntityManager();
+        return em.find(Post.class,id);
+    }
+
+    public void editPost(Post updatedPost) {
+
+        try{
+            EntityManager em=emf.createEntityManager();
+            EntityTransaction et=em.getTransaction();
+            et.begin();
+            em.merge(updatedPost); // Transient/Detached ---> Managed(Persisted)
+            et.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void deletePost(Integer id) {
+        try{
+            EntityManager em=emf.createEntityManager();
+            EntityTransaction et=em.getTransaction();
+            et.begin();
+            Post p=em.find(Post.class,id);
+            em.remove(p);
+            et.commit();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
 }
 // Older JDBC Code :
 // Class.forName will load the Driver class from org.postgresql package

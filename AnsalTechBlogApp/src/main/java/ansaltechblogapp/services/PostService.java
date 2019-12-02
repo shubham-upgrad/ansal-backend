@@ -42,4 +42,16 @@ public class PostService {
         //(or added to the database successfully)
 
     }
+
+    public Post getPostById(Integer id) {
+        return postRepository.getPostById(id);
+    }
+
+    public void editPost(Post updatedPost) {
+        postRepository.editPost(updatedPost);
+    }
+
+    public void deletePost(Integer id) {
+        postRepository.deletePost(id);
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class PostController {
         if(logged==null){
             return "user/login";
         }
-        ArrayList<Post> posts=postService.getUserPosts();
+        ArrayList<Post> posts=postService.getAllPosts();
         model.addAttribute("list_of_posts",posts);
         return "posts";
     }
@@ -38,4 +39,20 @@ public class PostController {
 
     }
 
+    @RequestMapping("/editPost")
+    public String editPostPage(@RequestParam(name = "postId")Integer id,Model model){
+        Post p=postService.getPostById(id);
+        model.addAttribute("post",p);
+        return "post/edit";
+    }
+    @RequestMapping(value = "/editPost",method = RequestMethod.POST)
+    public String editPost(Post updatedPost){
+        postService.editPost(updatedPost);
+        return "redirect:/posts";
+    }
+    @RequestMapping("/deletePost")
+    public String deletePost(@RequestParam("postId")Integer id){
+        postService.deletePost(id);
+        return "redirect:/posts";
+    }
 }

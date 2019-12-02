@@ -1,24 +1,21 @@
 package ansaltechblogapp.services;
 
 import ansaltechblogapp.models.User;
+import ansaltechblogapp.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+    @Autowired
+    UserRepository userRepository;
     public User checkUser(User user) {
-        if(user.getUsername().equals("Hitesh") && user.getPassword().equals("Hitesh@123")){
-            return user;
-        }
-        else{
-            return null;
-        }
+        return userRepository.checkUser(user);
     }
 
     public User registerUser(User user) {
-        System.out.println("User successfully registered with following details:::");
-        System.out.println("Username:::"+user.getUsername());
-        System.out.println("Password:::"+user.getPassword());
-        return user; // This method would usually return null if user is not successfully
+
+        return userRepository.registerUser(user); // This method would usually return null if user is not successfully
         // registered(i.e, user could not be addded to the database)
 
     }
