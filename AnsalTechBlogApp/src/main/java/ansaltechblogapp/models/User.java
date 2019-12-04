@@ -1,6 +1,8 @@
 package ansaltechblogapp.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="users")
@@ -15,6 +17,12 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name="profile_id")
     UserProfile profile;
+    // mappedBy : value = "user"
+    // mappedBy is used to tell Hibernate that this particular relationship
+    //  between Post and User has already been mapped by user attribute of the
+    // other entity in the relationship.
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    List<Post> posts=new ArrayList<Post>();
 
     public UserProfile getProfile() {
         return profile;

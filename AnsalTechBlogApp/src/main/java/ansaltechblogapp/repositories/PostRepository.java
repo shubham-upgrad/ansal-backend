@@ -1,6 +1,7 @@
 package ansaltechblogapp.repositories;
 
 import ansaltechblogapp.models.Post;
+import ansaltechblogapp.models.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
@@ -94,6 +95,21 @@ public class PostRepository {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Post> getUserPosts(User logged) {
+        ArrayList<Post> posts=new ArrayList<>();
+
+        try{
+            EntityManager em = emf.createEntityManager();
+            TypedQuery<Post> tq = em.createQuery("SELECT p from Post p WHERE p.user=:loggeduser", Post.class);
+            tq.setParameter("loggeduser",logged);
+            posts = (ArrayList<Post>) tq.getResultList(); // Will return a List(need to Downcast)
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return posts;
     }
 }
 // Older JDBC Code :

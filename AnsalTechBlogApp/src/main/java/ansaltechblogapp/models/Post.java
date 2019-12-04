@@ -1,7 +1,10 @@
 package ansaltechblogapp.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 @Entity
 @Table(name="posts")
 public class Post {
@@ -21,6 +24,28 @@ public class Post {
     private String body;
     @Column(name="post_date")
     private Date date;
+    // Any field marked @Transient will not be mapped to the table column
+    // So using @Transient you can define fields that are required by your (java)app
+    // and have no use in database.
+    @Transient
+    private String javaBlog;
+    @Transient
+    private String springBlog;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="user_id")
+    private User user;
+
+    @ManyToMany(fetch=FetchType.EAGER,cascade = CascadeType.PERSIST)
+    private List<Category> categories = new ArrayList<>();
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Post(String title, String body, Date date) {
         this.title = title;
@@ -31,6 +56,7 @@ public class Post {
     public Post() {
 
     }
+
 
     public String getTitle() {
         return title;
@@ -62,5 +88,29 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getJavaBlog() {
+        return javaBlog;
+    }
+
+    public void setJavaBlog(String javaBlog) {
+        this.javaBlog = javaBlog;
+    }
+
+    public String getSpringBlog() {
+        return springBlog;
+    }
+
+    public void setSpringBlog(String springBlog) {
+        this.springBlog = springBlog;
+    }
+
+    public List<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(List<Category> categories) {
+        this.categories = categories;
     }
 }

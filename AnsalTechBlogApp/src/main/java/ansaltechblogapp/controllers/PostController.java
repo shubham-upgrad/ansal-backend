@@ -1,5 +1,6 @@
 package ansaltechblogapp.controllers;
 
+import ansaltechblogapp.models.Category;
 import ansaltechblogapp.models.Post;
 import ansaltechblogapp.models.User;
 import ansaltechblogapp.services.PostService;
@@ -24,7 +25,7 @@ public class PostController {
         if(logged==null){
             return "user/login";
         }
-        ArrayList<Post> posts=postService.getAllPosts();
+        ArrayList<Post> posts=postService.getUserPosts(logged);
         model.addAttribute("list_of_posts",posts);
         return "posts";
     }
@@ -32,9 +33,30 @@ public class PostController {
     public String createPostPage(){
         return "createpost.html";
     }
+
+
     @RequestMapping(value = "/post/create",method = RequestMethod.POST)
-    public String createPost(Post p){
+    public String createPost(Post p,HttpSession session){
+
+        p.setUser((User)session.getAttribute("loggeduser"));
+
+
+        if(p.getJavaBlog()!=null){ // means javaBlog checkbox was selected
+            Category javaBlog=new Category();
+            javaBlog.setCategory("Java Blog");
+            p.getCategories().add(javaBlog);
+        }
+
+        if(p.getSpringBlog()!=null){ // means springBlog checkbox was selected
+            Category springBlog=new Category();
+            springBlog.setCategory("Spring Blog");
+            // springBlog =
+            p.getCategories().add(springBlog);
+        }
+
+
         Post created = postService.createPost(p);
+
         return "redirect:/posts"; // Redirect to page where user posts are available
 
     }
