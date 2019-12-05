@@ -19,6 +19,7 @@ public class JPAConfig {
         return emfb.getObject();
     }
     // Telling spring that this is the DataSource that we want to use
+    // H2 - in memory DB
     @Bean
     public DataSource dataSource(){
         DriverManagerDataSource ds=new DriverManagerDataSource();

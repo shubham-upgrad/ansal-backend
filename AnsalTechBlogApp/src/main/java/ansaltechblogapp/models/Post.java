@@ -35,7 +35,7 @@ public class Post {
     @JoinColumn(name="user_id")
     private User user;
 
-    @ManyToMany(fetch=FetchType.EAGER,cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch=FetchType.EAGER,cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private List<Category> categories = new ArrayList<>();
 
 

@@ -1,0 +1,26 @@
+
+Model - Data representation
+View - Presentation Logic (How the data is presented)
+Controller - Business Logic (How the data is processed) -> request handlers + services + repository
+
+
+1. 
+Request : localhost:8080
+Mapping  : "/"
+Controller : HomeController
+Dependencies : PostService
+Method : index(Model model,HttpSession session)
+	Keywords to observe :
+		- @Controller : A component that defines a Controller of the MVC Architecture
+		- @Autowired : Used for obtaining an instance of a class which is instantiated by Spring IoC container
+						this is usually a @Bean or a @Component or a @Configuration class
+		- @RequestMapping : Specifies which URL will trigger the annotated method
+							It can also have RequestMethod (GET or POST or PUT or DELETE)				
+		- Model model : It is used to send data to the view from backend(controller)
+	Dependency Review : 
+		- PostService :
+			Dependecies : PostRepository
+			Keywords to observe :
+				@Service - A component that defines a Service of the MVC Architecture(the backend part)
+				
+

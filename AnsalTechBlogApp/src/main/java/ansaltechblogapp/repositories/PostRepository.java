@@ -1,5 +1,6 @@
 package ansaltechblogapp.repositories;
 
+import ansaltechblogapp.models.Category;
 import ansaltechblogapp.models.Post;
 import ansaltechblogapp.models.User;
 import org.springframework.stereotype.Repository;
@@ -56,7 +57,7 @@ public class PostRepository {
             et.begin(); // Starting the transaction
             // Stuff that needs to be done during the transaction
             // Create a post
-            em.persist(p); // Transient ---> Persisted
+            em.merge(p); // Transient ---> Persisted
             et.commit();
             return p;
         }catch(Exception e){
@@ -110,6 +111,19 @@ public class PostRepository {
             e.printStackTrace();
         }
         return posts;
+    }
+
+    public Category findCategory(String category) {
+        try{
+            EntityManager em = emf.createEntityManager();
+            TypedQuery<Category> tq = em.createQuery("SELECT c from Category c WHERE c.category=:category", Category.class);
+            tq.setParameter("category",category);
+            Category c = tq.getSingleResult();
+            return c;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
 // Older JDBC Code :

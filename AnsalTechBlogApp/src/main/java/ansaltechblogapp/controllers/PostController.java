@@ -39,19 +39,28 @@ public class PostController {
     public String createPost(Post p,HttpSession session){
 
         p.setUser((User)session.getAttribute("loggeduser"));
-
-
         if(p.getJavaBlog()!=null){ // means javaBlog checkbox was selected
-            Category javaBlog=new Category();
-            javaBlog.setCategory("Java Blog");
-            p.getCategories().add(javaBlog);
+            Category c=postService.findCategory("Java Blog");
+            if(c!=null) {
+                p.getCategories().add(c);
+            }else{
+                Category javaBlog=new Category();
+                javaBlog.setCategory("Java Blog");
+                p.getCategories().add(javaBlog);
+            }
+
         }
 
         if(p.getSpringBlog()!=null){ // means springBlog checkbox was selected
-            Category springBlog=new Category();
-            springBlog.setCategory("Spring Blog");
-            // springBlog =
-            p.getCategories().add(springBlog);
+            Category c=postService.findCategory("Spring Blog");
+            if(c!=null) {
+                p.getCategories().add(c);
+            }else{
+                Category springBlog=new Category();
+                springBlog.setCategory("Spring Blog");
+                p.getCategories().add(springBlog);
+            }
+
         }
 
 

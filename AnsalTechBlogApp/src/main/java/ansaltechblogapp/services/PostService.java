@@ -1,5 +1,6 @@
 package ansaltechblogapp.services;
 
+import ansaltechblogapp.models.Category;
 import ansaltechblogapp.models.Post;
 import ansaltechblogapp.models.User;
 import ansaltechblogapp.repositories.PostRepository;
@@ -46,5 +47,9 @@ public class PostService {
 
     public void deletePost(Integer id) {
         postRepository.deletePost(id);
+    }
+
+    public Category findCategory(String category) {
+        return postRepository.findCategory(category);
     }
 }
